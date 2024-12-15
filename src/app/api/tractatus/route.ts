@@ -1,7 +1,7 @@
 import { openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
 
-export default async function POST(req: Request) {
+export async function POST(req: Request) {
   const { prompt } = await req.json() as { prompt: string };
 
   const system = `
