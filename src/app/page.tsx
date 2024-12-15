@@ -11,7 +11,12 @@ export default function Home() {
             "Transform your ideas into a structured philosophical treatise, inspired by Wittgenstein's Tractatus Logico-Philosophicus."
           }
         </p>
-        <div className="mb-12 space-y-6 text-left">
+
+        <Button asChild className="mb-12">
+          <Link href="/generate">Start Generating</Link>
+        </Button>
+
+        <div className="space-y-6 text-left">
           <div>
             <h2 className="mb-2 text-2xl font-semibold">
               What is a Tractatus?
@@ -88,10 +93,6 @@ export default function Home() {
             </ul>
           </div>
         </div>
-
-        <Button asChild>
-          <Link href="/generate">Start Generating</Link>
-        </Button>
       </div>
     </main>
   );
