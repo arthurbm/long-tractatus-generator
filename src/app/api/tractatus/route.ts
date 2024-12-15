@@ -26,7 +26,7 @@ You will be given the full content of a book. The book may be divided into multi
 
 **Task and Intent:**  
 **Task:**  
-From the full text of the book provided, first identify the distinct sections. Then, for each section, create a separate "Tractatus" in JSON format. Each main proposition should be numbered with an integer (e.g., "1", "2", "3"), and subdivisions represented with decimal numbering ("1.1", "1.2", "1.2.1", etc.). You may add titles, descriptions, or other properties if necessary. Ensure that at any level, if it makes sense for a proposition to have its own subpropositions, you include them. Produce one JSON document for each identified section. Each tractatus must contain at least 1000 tokens.
+From the full text of the book provided, first identify the distinct sections. Then, for each section, create a separate "Tractatus" in JSON format. Each main proposition should be numbered with an integer (e.g., "1", "2", "3"), and subdivisions represented with decimal numbering ("1.1", "1.2", "1.2.1", etc.). Ensure that at any level, if it makes sense for a proposition to have its own subpropositions, you include them. Produce one JSON document for each identified section. Each tractatus section must contain at least 1000 tokens.
 
 **Intent:**  
 Create a structured, hierarchical, and logical set of JSON documents—one per section—reflecting the logic and relationships of the ideas within each section. This hierarchical structure should allow for nesting at multiple levels, with any proposition potentially having its own subpropositions if needed. These documents will be used later by LLMs for reasoning and structured queries.
@@ -87,7 +87,7 @@ Use an instructive, clear, concise, and coherent tone. The language should be di
     model: openai("gpt-4o-mini"),
     system,
     prompt,
-    experimental_continueSteps: true
+    experimental_continueSteps: true,
   });
 
   return result.toDataStreamResponse();

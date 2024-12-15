@@ -11,9 +11,9 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { useCompletion } from "ai/react";
-import { useEffect, useRef } from "react";
 import { Copy, StopCircle } from "lucide-react";
 import { toast } from "sonner";
+import { useState, useEffect } from "react";
 
 export function TractatusGenerator() {
   const {
@@ -27,14 +27,33 @@ export function TractatusGenerator() {
     api: "/api/tractatus",
   });
 
-  const resultRef = useRef<HTMLDivElement>(null);
+  const loadingMessages = [
+    "☕ Grab a cup of coffee while I think...",
+    "🤔 Processing your brilliant ideas...",
+    "🧩 Organizing your thoughts Wittgenstein-style...",
+    "🎯 Making your text more philosophical...",
+    "🔄 Transforming chaos into order...",
+    "🎨 Crafting your intellectual masterpiece...",
+    "🌟 Almost there, just adding some sparkle...",
+    "📚 Consulting the great philosophers...",
+  ];
 
-  // Auto-scroll effect
+  const [currentMessage, setCurrentMessage] = useState(loadingMessages[0]);
+
   useEffect(() => {
-    if (isLoading && resultRef.current) {
-      resultRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    if (isLoading) {
+      const interval = setInterval(() => {
+        setCurrentMessage((prevMessage) => {
+          if (!prevMessage) return loadingMessages[0];
+          const currentIndex = loadingMessages.indexOf(prevMessage);
+          const nextIndex = (currentIndex + 1) % loadingMessages.length;
+          return loadingMessages[nextIndex];
+        });
+      }, 3000); // Change message every 3 seconds
+
+      return () => clearInterval(interval);
     }
-  }, [completion, isLoading]);
+  }, [isLoading]);
 
   const handleCopy = async () => {
     if (completion) {
@@ -62,26 +81,33 @@ export function TractatusGenerator() {
               value={input}
               onChange={handleInputChange}
             />
-            <div className="mt-4 flex gap-2">
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Generating..." : "Generate Tractatus"}
-              </Button>
-              {isLoading && (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={() => stop()}
-                >
-                  <StopCircle className="mr-2 h-4 w-4" />
-                  Stop
+            <div className="mt-4 flex flex-col gap-2">
+              <div className="flex gap-2">
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? "Generating..." : "Generate Tractatus"}
                 </Button>
+                {isLoading && (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => stop()}
+                  >
+                    <StopCircle className="mr-2 h-4 w-4" />
+                    Stop
+                  </Button>
+                )}
+              </div>
+              {isLoading && (
+                <p className="animate-pulse text-sm text-muted-foreground">
+                  {currentMessage}
+                </p>
               )}
             </div>
           </form>
         </CardContent>
         <CardFooter className="flex flex-col items-start">
           {completion && (
-            <div className="w-full" ref={resultRef}>
+            <div className="w-full">
               <div className="mb-2 flex items-center justify-between">
                 <h3 className="text-lg font-semibold">Generated Tractatus:</h3>
                 <Button
@@ -89,6 +115,7 @@ export function TractatusGenerator() {
                   size="sm"
                   onClick={handleCopy}
                   className="ml-2"
+                  disabled={isLoading}
                 >
                   <Copy className="mr-2 h-4 w-4" />
                   Copy

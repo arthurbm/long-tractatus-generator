@@ -23,6 +23,30 @@ export default function Home() {
               structured presentation of complex ideas.
             </p>
           </div>
+
+          <div>
+            <h2 className="mb-2 text-2xl font-semibold">
+              Perfect for Long Content
+            </h2>
+            <p className="text-muted-foreground">
+              Unlike traditional AI tools, our generator excels at processing
+              extensive content like entire books or long articles. It
+              automatically:
+            </p>
+            <ul className="mt-2 list-inside list-disc text-muted-foreground">
+              <li>Identifies and separates distinct sections in your text</li>
+              <li>
+                Generates a dedicated tractatus for each section, ensuring
+                thorough coverage
+              </li>
+              <li>
+                Processes content beyond typical AI token limits through smart
+                sectioning
+              </li>
+              <li>Maintains logical coherence across all generated sections</li>
+            </ul>
+          </div>
+
           <div>
             <h2 className="mb-2 text-2xl font-semibold">How it Works</h2>
             <p className="mt-0 text-muted-foreground">
@@ -30,6 +54,11 @@ export default function Home() {
               structured Tractatus format, organizing your ideas into logical
               hierarchies and relationships. Perfect for philosophers,
               researchers, and anyone interested in structured thinking.
+            </p>
+            <p className="mt-2 text-muted-foreground">
+              For long texts, it intelligently breaks down the content into
+              manageable sections, ensuring each part receives detailed
+              attention while maintaining the overall logical flow.
             </p>
           </div>
 
@@ -60,7 +89,7 @@ export default function Home() {
           </div>
         </div>
 
-        <Button>
+        <Button asChild>
           <Link href="/generate">Start Generating</Link>
         </Button>
       </div>
