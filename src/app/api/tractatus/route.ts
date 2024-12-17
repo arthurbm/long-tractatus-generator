@@ -5,11 +5,23 @@ import { streamText } from "ai";
 export const runtime = "edge";
 
 export async function POST(req: Request) {
-  const { prompt, returnType, modelValue } = await req.json() as {
+  const { prompt, returnType, modelValue, language } = await req.json() as {
     prompt: string;
     returnType: 'json' | 'text';
     modelValue: string;
+    language: 'same' | 'en' | 'pt-BR' | 'es' | 'fr' | 'it';
   };
+
+  const languageInstructions = language === 'same' ? '' : `
+**Language Instructions:**
+Generate the output in ${
+    language === 'en' ? 'English' :
+    language === 'pt-BR' ? 'Brazilian Portuguese' :
+    language === 'es' ? 'Spanish' :
+    language === 'fr' ? 'French' :
+    'Italian'
+  }. Translate all content, including propositions, explanations, and any additional text, while maintaining the philosophical accuracy and technical precision of the original material.
+`;
 
   const jsonSystem = `
 **Prompt Name:** Tractatus Generator  
@@ -78,6 +90,8 @@ Create a structured, hierarchical, and logical set of JSON documents—one per s
 - Internally structure your reasoning before presenting the final result.  
 - Review and refine the hierarchy for clarity and coherence.  
 - Respond only with the final JSON documents (one per section), without external commentary.
+
+${languageInstructions}
 `;
 
   const textSystem = `
@@ -125,8 +139,6 @@ Create a structured, hierarchical, and logical set of documents—one per sectio
 **Tonality:**  
 Use an instructive, clear, concise, and coherent tone. The language should be direct and free from unnecessary embellishments, facilitating both human comprehension and machine indexing.
 
----
-
 **Step-by-Step Instructions:**  
 1. Analyze the full content of the book to identify its major sections.  
 2. For each identified section, determine the main concepts, which will become the primary propositions (e.g., "1", "2").  
@@ -148,6 +160,8 @@ Use an instructive, clear, concise, and coherent tone. The language should be di
 - Review and refine the hierarchy for clarity and coherence
 - Ensure each section maintains substantial depth (minimum 1000 tokens)
 - Present only the final structured text output, without external commentary
+
+${languageInstructions}
 `;
 
   const system = returnType === 'json' ? jsonSystem : textSystem;

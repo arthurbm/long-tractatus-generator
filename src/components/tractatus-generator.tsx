@@ -28,12 +28,14 @@ export function TractatusGenerator() {
   const [model, setModel] = useState<"gpt-4o-mini" | "gemini-flash-1.5">(
     "gpt-4o-mini",
   );
+  const [language, setLanguage] = useState<
+    "same" | "en" | "pt-BR" | "es" | "fr" | "it"
+  >("same");
 
   const {
     input,
     complete,
     handleInputChange,
-    setInput,
     completion,
     isLoading,
     stop,
@@ -86,6 +88,7 @@ export function TractatusGenerator() {
       body: {
         returnType: requestType,
         modelValue: model,
+        language,
       },
     });
   };
@@ -118,6 +121,30 @@ export function TractatusGenerator() {
                   <SelectContent>
                     <SelectItem value="text">Text</SelectItem>
                     <SelectItem value="json">JSON</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium">
+                  Output Language
+                </label>
+                <Select
+                  value={language}
+                  onValueChange={(
+                    value: "same" | "en" | "pt-BR" | "es" | "fr" | "it",
+                  ) => setLanguage(value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select output language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="same">Same as Material</SelectItem>
+                    <SelectItem value="en">English</SelectItem>
+                    <SelectItem value="pt-BR">Portuguese (Brazil)</SelectItem>
+                    <SelectItem value="es">Spanish</SelectItem>
+                    <SelectItem value="fr">French</SelectItem>
+                    <SelectItem value="it">Italian</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
