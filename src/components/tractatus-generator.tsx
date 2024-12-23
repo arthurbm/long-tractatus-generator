@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { useCompletion } from "ai/react";
-import { Copy, StopCircle, Upload, X } from "lucide-react";
+import { Copy, StopCircle, Upload, X, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import {
@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { useRouter } from "next/navigation";
 
 const loadingMessages = [
   "☕ Grab a cup of coffee while I think...",
@@ -35,6 +36,7 @@ const loadingMessages = [
 ];
 
 export function TractatusGenerator() {
+  const router = useRouter();
   const [requestType, setRequestType] = useState<"json" | "text">("text");
   const [model, setModel] = useState<
     "gpt-4o-mini" | "gemini-flash-1.5" | "gemini-flash-2.0"
@@ -177,6 +179,13 @@ export function TractatusGenerator() {
     },
     [],
   );
+
+  const handleChatClick = useCallback(() => {
+    if (completion) {
+      localStorage.setItem("tractatus", completion);
+      router.push("/chat");
+    }
+  }, [completion, router]);
 
   return (
     <Card className="w-full">
@@ -358,16 +367,27 @@ export function TractatusGenerator() {
           <div className="w-full">
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
               <h3 className="text-lg font-semibold">Generated Tractatus:</h3>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleCopy}
-                className="shrink-0"
-                disabled={isLoading}
-              >
-                <Copy className="mr-2 h-4 w-4" />
-                Copy
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCopy}
+                  className="shrink-0"
+                  disabled={isLoading}
+                >
+                  <Copy className="mr-2 h-4 w-4" />
+                  Copy
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleChatClick}
+                  className="shrink-0"
+                >
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Chat with Tractatus
+                </Button>
+              </div>
             </div>
             <div className="overflow-x-auto whitespace-pre-wrap rounded-md bg-muted p-4">
               {completion}

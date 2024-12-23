@@ -6,6 +6,7 @@ import {
   Brain,
   FileText,
   LayoutList,
+  MessageSquare,
 } from "lucide-react";
 
 export default function Home() {
