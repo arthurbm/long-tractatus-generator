@@ -383,6 +383,7 @@ export function TractatusGenerator() {
                   size="sm"
                   onClick={handleChatClick}
                   className="shrink-0"
+                  disabled={isLoading}
                 >
                   <MessageSquare className="mr-2 h-4 w-4" />
                   Chat with Tractatus

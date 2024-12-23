@@ -79,7 +79,7 @@ export function Chat() {
                     )}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex flex-1 flex-col space-y-2">
+                <div className="flex flex-1 flex-col space-y-2 self-center">
                   <div className="prose prose-neutral dark:prose-invert max-w-none">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {message.content}
