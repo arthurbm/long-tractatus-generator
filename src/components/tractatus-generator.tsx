@@ -11,9 +11,9 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { useCompletion } from "ai/react";
-import { Copy, StopCircle } from "lucide-react";
+import { Copy, StopCircle, Upload, X } from "lucide-react";
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Select,
   SelectContent,
@@ -25,12 +25,14 @@ import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 
 export function TractatusGenerator() {
   const [requestType, setRequestType] = useState<"json" | "text">("text");
-  const [model, setModel] = useState<"gpt-4o-mini" | "gemini-flash-1.5">(
-    "gpt-4o-mini",
-  );
+  const [model, setModel] = useState<
+    "gpt-4o-mini" | "gemini-flash-1.5" | "gemini-flash-2.0"
+  >("gpt-4o-mini");
   const [language, setLanguage] = useState<
     "same" | "en" | "pt-BR" | "es" | "fr" | "it"
   >("same");
+  const [uploadedText, setUploadedText] = useState<string>("");
+  const [uploadedFileName, setUploadedFileName] = useState<string>("");
 
   const {
     input,
@@ -40,6 +42,7 @@ export function TractatusGenerator() {
     isLoading,
     stop,
     setCompletion,
+    setInput,
   } = useCompletion({
     api: "/api/tractatus",
   });
@@ -66,7 +69,7 @@ export function TractatusGenerator() {
           const nextIndex = (currentIndex + 1) % loadingMessages.length;
           return loadingMessages[nextIndex];
         });
-      }, 3000); // Change message every 3 seconds
+      }, 3000);
 
       return () => clearInterval(interval);
     }
@@ -84,7 +87,8 @@ export function TractatusGenerator() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setCompletion("");
-    await complete(input, {
+    const combinedText = [uploadedText, input].filter(Boolean).join("\n\n");
+    await complete(combinedText, {
       body: {
         returnType: requestType,
         modelValue: model,
@@ -93,13 +97,59 @@ export function TractatusGenerator() {
     });
   };
 
+  const handleFileUpload = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const error = (await response.json()) as { message: string };
+          throw new Error(error.message || "Failed to upload file");
+        }
+
+        const data = (await response.json()) as { text: string };
+        setUploadedText(data.text);
+        setUploadedFileName(file.name);
+        toast.success("File uploaded successfully", {
+          description:
+            "The file content has been processed and will be included in the generation.",
+        });
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        toast.error("Error uploading file", {
+          description:
+            error instanceof Error ? error.message : "Unknown error occurred",
+        });
+      }
+    },
+    [],
+  );
+
+  const clearUploadedFile = useCallback(() => {
+    setUploadedText("");
+    setUploadedFileName("");
+    toast.success("File removed", {
+      description: "The uploaded file has been removed.",
+    });
+  }, []);
+
   return (
     <div className="container mx-auto p-4">
       <Card className="w-full">
         <CardHeader>
           <CardTitle>Tractatus Generator</CardTitle>
           <CardDescription>
-            Enter your text to generate a comprehensive tractatus
+            Generate a comprehensive tractatus from your text and/or uploaded
+            files
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -153,9 +203,12 @@ export function TractatusGenerator() {
                 <label className="mb-2 block text-sm font-medium">Model</label>
                 <RadioGroup
                   value={model}
-                  onValueChange={(value: "gpt-4o-mini" | "gemini-flash-1.5") =>
-                    setModel(value)
-                  }
+                  onValueChange={(
+                    value:
+                      | "gpt-4o-mini"
+                      | "gemini-flash-1.5"
+                      | "gemini-flash-2.0",
+                  ) => setModel(value)}
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="gpt-4o-mini" id="gpt4" />
@@ -178,16 +231,71 @@ export function TractatusGenerator() {
                 </RadioGroup>
               </div>
 
-              <Textarea
-                placeholder="Enter your text here..."
-                className="min-h-[200px]"
-                value={input}
-                onChange={handleInputChange}
-              />
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Input Methods</label>
+                <div className="rounded-md border p-4">
+                  <div className="mb-4">
+                    <label className="mb-2 block text-sm font-medium">
+                      1. Upload File (Optional)
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="file"
+                        accept=".pdf,.docx,.txt"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                        id="file-upload"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() =>
+                          document.getElementById("file-upload")?.click()
+                        }
+                      >
+                        <Upload className="mr-2 h-4 w-4" />
+                        Upload File
+                      </Button>
+                      {uploadedFileName && (
+                        <div className="flex items-center gap-2 rounded-md bg-muted px-3 py-1">
+                          <span className="text-sm text-muted-foreground">
+                            {uploadedFileName}
+                          </span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={clearUploadedFile}
+                            className="h-auto p-0"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-medium">
+                      2. Manual Text Input (Optional)
+                    </label>
+                    <Textarea
+                      placeholder="Enter your text here..."
+                      className="min-h-[200px]"
+                      value={input}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
+
             <div className="flex flex-col gap-2">
               <div className="flex gap-2">
-                <Button type="submit" disabled={isLoading}>
+                <Button
+                  type="submit"
+                  disabled={isLoading || (!input && !uploadedText)}
+                >
                   {isLoading ? "Generating..." : "Generate Tractatus"}
                 </Button>
                 {isLoading && (
@@ -221,7 +329,7 @@ export function TractatusGenerator() {
                   Copy
                 </Button>
               </div>
-              <div className="whitespace-pre-wrap rounded-md bg-gray-100 p-4">
+              <div className="whitespace-pre-wrap rounded-md bg-muted p-4">
                 {completion}
               </div>
             </div>

@@ -1,6 +1,6 @@
 import { openai } from "@ai-sdk/openai";
 import { google } from "@ai-sdk/google";
-import { streamText } from "ai";
+import { smoothStream, streamText } from "ai";
 
 export const runtime = "edge";
 
@@ -182,6 +182,7 @@ ${languageInstructions}
     system,
     prompt,
     experimental_continueSteps: true,
+    experimental_transform: smoothStream()
   });
 
   return result.toDataStreamResponse();
