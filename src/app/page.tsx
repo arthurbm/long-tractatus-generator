@@ -1,96 +1,85 @@
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
+import {
+  ArrowRight,
+  BookText,
+  Brain,
+  FileText,
+  LayoutList,
+} from "lucide-react";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between bg-background p-24">
-      <div className="max-w-3xl text-center">
-        <h1 className="mb-8 text-5xl font-bold">AI Tractatus Generator</h1>
-        <p className="mb-8 text-xl text-muted-foreground">
-          {
-            "Transform your ideas into a structured philosophical treatise, inspired by Wittgenstein's Tractatus Logico-Philosophicus."
-          }
-        </p>
+    <main className="flex flex-col items-center px-4 py-8 md:p-24">
+      <div className="container max-w-4xl">
+        <div className="mb-16 text-center">
+          <h1 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+            AI Tractatus Generator
+          </h1>
+          <p className="mx-auto mb-8 max-w-2xl text-lg text-muted-foreground md:text-xl">
+            Transform your ideas into a structured philosophical treatise,
+            inspired by Wittgenstein&apos;s methodology
+          </p>
 
-        <Button asChild className="mb-12">
-          <Link href="/generate">Start Generating</Link>
-        </Button>
+          <Button asChild size="lg" className="gap-2">
+            <Link href="/generate">
+              Start Generating <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
 
-        <div className="space-y-6 text-left">
-          <div>
-            <h2 className="mb-2 text-2xl font-semibold">
-              What is a Tractatus?
-            </h2>
+        <div className="grid gap-8 md:grid-cols-2">
+          <div className="rounded-lg border bg-card p-6 shadow-sm">
+            <BookText className="mb-4 h-8 w-8 text-primary" />
+            <h2 className="mb-2 text-xl font-semibold">What is a Tractatus?</h2>
             <p className="text-muted-foreground">
               A Tractatus is a philosophical work written in a hierarchically
-              numbered format. Each statement is carefully numbered to show its
-              logical relationship to other statements, creating a clear and
-              structured presentation of complex ideas.
+              numbered format, where each statement shows its logical
+              relationship to others, creating a clear and structured
+              presentation of complex ideas.
             </p>
           </div>
 
-          <div>
-            <h2 className="mb-2 text-2xl font-semibold">
+          <div className="rounded-lg border bg-card p-6 shadow-sm">
+            <Brain className="mb-4 h-8 w-8 text-primary" />
+            <h2 className="mb-2 text-xl font-semibold">AI-Powered Analysis</h2>
+            <p className="text-muted-foreground">
+              Our advanced AI system processes your content intelligently,
+              identifying key concepts and creating logical hierarchies that
+              reflect the depth and interconnections of your ideas.
+            </p>
+          </div>
+
+          <div className="rounded-lg border bg-card p-6 shadow-sm">
+            <FileText className="mb-4 h-8 w-8 text-primary" />
+            <h2 className="mb-2 text-xl font-semibold">
               Perfect for Long Content
             </h2>
-            <p className="text-muted-foreground">
-              Unlike traditional AI tools, our generator excels at processing
-              extensive content like entire books or long articles. It
-              automatically:
-            </p>
-            <ul className="mt-2 list-inside list-disc text-muted-foreground">
-              <li>Identifies and separates distinct sections in your text</li>
-              <li>
-                Generates a dedicated tractatus for each section, ensuring
-                thorough coverage
-              </li>
-              <li>
-                Processes content beyond typical AI token limits through smart
-                sectioning
-              </li>
-              <li>Maintains logical coherence across all generated sections</li>
+            <ul className="space-y-2 text-muted-foreground">
+              <li>• Handles extensive content like books or articles</li>
+              <li>• Smart sectioning beyond typical AI limits</li>
+              <li>• Maintains coherence across sections</li>
+              <li>• Preserves logical relationships</li>
             </ul>
           </div>
 
-          <div>
-            <h2 className="mb-2 text-2xl font-semibold">How it Works</h2>
-            <p className="mt-0 text-muted-foreground">
-              Our AI-powered generator takes your input and transforms it into a
-              structured Tractatus format, organizing your ideas into logical
-              hierarchies and relationships. Perfect for philosophers,
-              researchers, and anyone interested in structured thinking.
-            </p>
-            <p className="mt-2 text-muted-foreground">
-              For long texts, it intelligently breaks down the content into
-              manageable sections, ensuring each part receives detailed
-              attention while maintaining the overall logical flow.
-            </p>
-          </div>
-
-          <div>
-            <h2 className="mb-2 text-2xl font-semibold">Learn more</h2>
-            <p className="mt-0 text-muted-foreground">
-              Here are some links to learn more about Tractatus:
-            </p>
-            <ul className="list-inside list-disc text-muted-foreground">
-              <li>
-                <Link
-                  href="https://biblioteca.tds.company/tds-books-tractatus-a-wittgenstein-inspired-framework-for-structuring-knowledge-in-llms"
-                  className="text-primary underline"
-                >
-                  TDS Books - Tractatus: A Wittgenstein Inspired Framework for
-                  Structuring Knowledge in LLMs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="https://pt.wikipedia.org/wiki/Tractatus_Logico-Philosophicus"
-                  className="text-primary underline"
-                >
-                  Wikipedia - Tractatus
-                </Link>
-              </li>
-            </ul>
+          <div className="rounded-lg border bg-card p-6 shadow-sm">
+            <LayoutList className="mb-4 h-8 w-8 text-primary" />
+            <h2 className="mb-2 text-xl font-semibold">Learn More</h2>
+            <div className="space-y-2">
+              <Link
+                href="https://biblioteca.tds.company/tds-books-tractatus-a-wittgenstein-inspired-framework-for-structuring-knowledge-in-llms"
+                className="block text-primary hover:underline"
+              >
+                • TDS Books - Tractatus Framework
+              </Link>
+              <Link
+                href="https://pt.wikipedia.org/wiki/Tractatus_Logico-Philosophicus"
+                className="block text-primary hover:underline"
+              >
+                • Wikipedia - Tractatus
+              </Link>
+            </div>
           </div>
         </div>
       </div>

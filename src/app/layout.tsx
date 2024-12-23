@@ -14,9 +14,11 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={GeistSans.variable}>
-      <body>
-        <div className="min-h-screen bg-background">{children}</div>
-        <Toaster richColors />
+      <body className="bg-background font-sans antialiased">
+        <div className="min-h-screen">
+          <main className="flex-1">{children}</main>
+        </div>
+        <Toaster richColors position="top-center" />
       </body>
     </html>
   );
