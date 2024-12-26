@@ -23,6 +23,7 @@ import {
 } from "~/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { useRouter } from "next/navigation";
+import { ModeToggle } from "./toggle-theme";
 
 const loadingMessages = [
   "☕ Grab a cup of coffee while I think...",
@@ -190,7 +191,10 @@ export function TractatusGenerator() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Tractatus Generator</CardTitle>
+        <CardTitle className="flex items-center justify-between">
+          Tractatus Generator
+          <ModeToggle />
+        </CardTitle>
         <CardDescription>
           Generate a comprehensive tractatus from your text and/or uploaded
           files
