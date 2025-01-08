@@ -2,7 +2,10 @@ import { type Message, convertToCoreMessages, streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
 
 export async function POST(req: Request) {
-  const { messages, tractatus } = (await req.json()) as { messages: Message[]; tractatus: string };
+  const { messages, tractatus } = (await req.json()) as {
+    messages: Message[];
+    tractatus: string;
+  };
 
   if (!tractatus) {
     return new Response("No tractatus provided", { status: 400 });
@@ -11,8 +14,6 @@ export async function POST(req: Request) {
   const result = streamText({
     model: openai("gpt-4o-mini"),
     system: `You are a philosophical assistant specializing in analyzing and discussing the following Tractatus:
-
-${tractatus}
 
 Your role is to help users understand and explore this specific Tractatus, providing insights and explanations based on its hierarchical structure and logical relationships.
 
@@ -29,9 +30,12 @@ If users ask about specific sections, help them understand:
 - The philosophical implications
 - Any relevant background context
 
-Always maintain a philosophical yet approachable tone, making complex ideas accessible without oversimplifying them.`,
+Always maintain a philosophical yet approachable tone, making complex ideas accessible without oversimplifying them.
+------------
+${tractatus}
+`,
     messages: convertToCoreMessages(messages),
   });
 
   return result.toDataStreamResponse();
-} 
+}
