@@ -16,8 +16,8 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache"
   },
   "dependencies": {
-    "@ai-sdk/google": "^1.0.10",
-    "@ai-sdk/openai": "^1.0.8",
+    "@ai-sdk/google": "^1.1.20",
+    "@ai-sdk/openai": "^1.2.1",
     "@radix-ui/react-avatar": "^1.1.2",
     "@radix-ui/react-dropdown-menu": "^2.1.4",
     "@radix-ui/react-radio-group": "^1.2.2",
@@ -26,7 +26,7 @@
     "@t3-oss/env-nextjs": "^0.10.1",
     "@types/pdf-parse": "^1.1.4",
     "@types/word-extractor": "^1.0.6",
-    "ai": "^4.0.18",
+    "ai": "^4.1.54",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "docx": "^9.1.0",

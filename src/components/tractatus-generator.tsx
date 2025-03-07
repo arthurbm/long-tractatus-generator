@@ -39,9 +39,9 @@ const loadingMessages = [
 export function TractatusGenerator() {
   const router = useRouter();
   const [requestType, setRequestType] = useState<"json" | "text">("text");
-  const [model, setModel] = useState<
-    "gpt-4o-mini" | "gemini-flash-1.5" | "gemini-flash-2.0"
-  >("gpt-4o-mini");
+  const [model, setModel] = useState<"gpt-4o-mini" | "gemini-flash-2.0">(
+    "gpt-4o-mini",
+  );
   const [language, setLanguage] = useState<
     "same" | "en" | "pt-BR" | "es" | "fr" | "it"
   >("same");
@@ -162,7 +162,7 @@ export function TractatusGenerator() {
   );
 
   const handleModelChange = useCallback(
-    (value: "gpt-4o-mini" | "gemini-flash-1.5" | "gemini-flash-2.0") => {
+    (value: "gpt-4o-mini" | "gemini-flash-2.0") => {
       if (!isLoading) {
         setModel(value);
       }
@@ -251,7 +251,7 @@ export function TractatusGenerator() {
             <RadioGroup
               value={model}
               onValueChange={handleModelChange}
-              className="grid gap-2 md:grid-cols-3"
+              className="grid gap-2 md:grid-cols-2"
               disabled={isLoading}
             >
               <label className="cursor-pointer">
@@ -261,15 +261,6 @@ export function TractatusGenerator() {
                 >
                   <RadioGroupItem value="gpt-4o-mini" id="gpt4" />
                   <span className="text-sm">GPT-4o Mini</span>
-                </div>
-              </label>
-              <label className="cursor-pointer">
-                <div
-                  className="flex items-center space-x-2 rounded-md border p-2 hover:bg-muted/50"
-                  onClick={() => handleModelChange("gemini-flash-1.5")}
-                >
-                  <RadioGroupItem value="gemini-flash-1.5" id="gemini" />
-                  <span className="text-sm">Gemini Flash 1.5</span>
                 </div>
               </label>
               <label className="cursor-pointer">

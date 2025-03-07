@@ -169,10 +169,8 @@ ${languageInstructions}
   let model;
   if (modelValue === 'gpt-4o-mini') {
     model = openai("gpt-4o-mini");
-  } else if (modelValue === 'gemini-flash-1.5') {
-    model = google("gemini-1.5-flash-latest");
   } else if (modelValue === 'gemini-flash-2.0') {
-    model = google("gemini-2.0-flash-exp");
+    model = google("gemini-2.0-flash-001");
   } else {
     throw new Error("Invalid model");
   }
