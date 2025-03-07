@@ -1,5 +1,5 @@
 import { type Message, convertToCoreMessages, streamText } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
 
 export async function POST(req: Request) {
   const { messages, tractatus } = (await req.json()) as {
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   }
 
   const result = streamText({
-    model: openai("gpt-4o-mini"),
+    model: google("gemini-2.0-flash-001"),
     system: `You are a philosophical assistant specializing in analyzing and discussing the following Tractatus:
 
 Your role is to help users understand and explore this specific Tractatus, providing insights and explanations based on its hierarchical structure and logical relationships.
