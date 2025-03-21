@@ -10,12 +10,25 @@ import { generateId } from "ai";
 import remarkGfm from "remark-gfm";
 import { useRouter } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 const initialMessageId = generateId();
 
 export function Chat() {
   const router = useRouter();
   const [tractatus, setTractatus] = useState<string | null>(null);
+
+  // Disable body and html scrolling when this component is mounted
+  useEffect(() => {
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+    };
+  }, []);
 
   useEffect(() => {
     const storedTractatus = localStorage.getItem("tractatus");
@@ -48,8 +61,8 @@ export function Chat() {
   }
 
   return (
-    <div className="flex h-full flex-col">
-      <main className="flex-1 overflow-y-auto">
+    <div className="flex h-screen flex-col overflow-hidden">
+      <ScrollArea className="flex-1">
         <div className="mx-auto max-w-3xl px-4 py-4">
           <div className="space-y-4">
             {messages.map((message, i) => (
@@ -76,7 +89,7 @@ export function Chat() {
             ))}
           </div>
         </div>
-      </main>
+      </ScrollArea>
       <footer className="sticky bottom-0 border-t bg-background p-4">
         <form onSubmit={handleSubmit} className="mx-auto flex max-w-3xl gap-2">
           <Textarea
