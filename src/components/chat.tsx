@@ -14,6 +14,8 @@ import remarkGfm from "remark-gfm";
 import { useRouter } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 
+const initialMessageId = generateId();
+
 export function Chat() {
   const router = useRouter();
   const [tractatus, setTractatus] = useState<string | null>(null);
@@ -34,7 +36,7 @@ export function Chat() {
     },
     initialMessages: [
       {
-        id: generateId(),
+        id: initialMessageId,
         role: "assistant",
         content:
           "Hello! I'm here to help you explore and understand your generated Tractatus. What would you like to discuss?",
