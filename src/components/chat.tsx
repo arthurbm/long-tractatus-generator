@@ -1,14 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Avatar, AvatarFallback } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 import { Card } from "~/components/ui/card";
 import { Loader2, Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import { RiRobot2Line } from "react-icons/ri";
-import { BsPerson } from "react-icons/bs";
 import { generateId } from "ai";
 import remarkGfm from "remark-gfm";
 import { useRouter } from "next/navigation";
@@ -29,7 +26,7 @@ export function Chat() {
     setTractatus(storedTractatus);
   }, [router]);
 
-  const { messages, input, setInput, status, append } = useChat({
+  const { messages, input, setInput, status, handleSubmit } = useChat({
     api: "/api/chat",
     body: {
       tractatus,
@@ -44,59 +41,44 @@ export function Chat() {
     ],
   });
 
-  const isLoading = status === "streaming";
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
-    setInput("");
-    void append({
-      content: input,
-      role: "user",
-    });
-  };
+  const isLoading = status === "streaming" || status === "submitted";
 
   if (!tractatus) {
     return null;
   }
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex h-full flex-col">
       <main className="flex-1 overflow-y-auto">
-        <div className="px-4 py-4">
+        <div className="mx-auto max-w-3xl px-4 py-4">
           <div className="space-y-4">
             {messages.map((message, i) => (
-              <Card
+              <div
                 key={i}
-                className={`flex items-start gap-3 p-4 ${
-                  message.role === "assistant"
-                    ? "bg-secondary"
-                    : "bg-background"
-                }`}
+                className={`flex w-full ${message.role === "user" ? "justify-end" : "justify-start"}`}
               >
-                <Avatar>
-                  <AvatarFallback className="flex items-center justify-center">
-                    {message.role === "user" ? (
-                      <BsPerson className="h-5 w-5" />
-                    ) : (
-                      <RiRobot2Line className="h-5 w-5" />
-                    )}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-1 flex-col space-y-2 self-center">
-                  <div className="prose prose-neutral dark:prose-invert max-w-none">
+                <Card
+                  className={`max-w-[80%] p-4 ${
+                    message.role === "assistant"
+                      ? "bg-secondary"
+                      : "bg-background"
+                  }`}
+                >
+                  <div
+                    className={`prose prose-neutral dark:prose-invert ${message.role === "user" ? "text-right" : ""}`}
+                  >
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {message.content}
                     </ReactMarkdown>
                   </div>
-                </div>
-              </Card>
+                </Card>
+              </div>
             ))}
           </div>
         </div>
       </main>
-      <footer className="border-t bg-background p-4">
-        <form onSubmit={handleSubmit} className="flex gap-2">
+      <footer className="sticky bottom-0 border-t bg-background p-4">
+        <form onSubmit={handleSubmit} className="mx-auto flex max-w-3xl gap-2">
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
