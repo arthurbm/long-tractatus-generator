@@ -11,7 +11,14 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { useCompletion } from "ai/react";
-import { Copy, StopCircle, Upload, X, MessageSquare } from "lucide-react";
+import {
+  Copy,
+  StopCircle,
+  Upload,
+  X,
+  MessageSquare,
+  Loader2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import {
@@ -48,6 +55,7 @@ export function TractatusGenerator() {
   const [uploadedText, setUploadedText] = useState<string>("");
   const [uploadedFileName, setUploadedFileName] = useState<string>("");
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
 
   const {
     input,
@@ -106,6 +114,7 @@ export function TractatusGenerator() {
       formData.append("file", file);
 
       try {
+        setIsUploading(true);
         const response = await fetch("/api/upload", {
           method: "POST",
           body: formData,
@@ -129,6 +138,8 @@ export function TractatusGenerator() {
           description:
             error instanceof Error ? error.message : "Unknown error occurred",
         });
+      } finally {
+        setIsUploading(false);
       }
     },
     [],
@@ -157,8 +168,8 @@ export function TractatusGenerator() {
   const currentMessage = loadingMessages[currentMessageIndex];
 
   const isSubmitDisabled = useMemo(
-    () => isLoading || (!input && !uploadedText),
-    [isLoading, input, uploadedText],
+    () => isLoading || isUploading || (!input && !uploadedText),
+    [isLoading, isUploading, input, uploadedText],
   );
 
   const handleModelChange = useCallback(
@@ -289,7 +300,7 @@ export function TractatusGenerator() {
                     onChange={handleFileUpload}
                     className="hidden"
                     id="file-upload"
-                    disabled={isLoading}
+                    disabled={isLoading || isUploading}
                   />
                   <Button
                     type="button"
@@ -297,10 +308,19 @@ export function TractatusGenerator() {
                     onClick={() =>
                       document.getElementById("file-upload")?.click()
                     }
-                    disabled={isLoading}
+                    disabled={isLoading || isUploading}
                   >
-                    <Upload className="mr-2 h-4 w-4" />
-                    Upload File
+                    {isUploading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="mr-2 h-4 w-4" />
+                        Upload File
+                      </>
+                    )}
                   </Button>
                   {uploadedFileName && (
                     <div className="flex items-center gap-2 rounded-md bg-muted px-3 py-1">
@@ -313,7 +333,7 @@ export function TractatusGenerator() {
                         size="sm"
                         onClick={clearUploadedFile}
                         className="h-auto p-0"
-                        disabled={isLoading}
+                        disabled={isLoading || isUploading}
                       >
                         <X className="h-4 w-4" />
                       </Button>
