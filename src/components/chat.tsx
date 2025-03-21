@@ -1,6 +1,5 @@
 "use client";
 
-import { useChat } from "ai/react";
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
@@ -13,6 +12,7 @@ import { BsPerson } from "react-icons/bs";
 import { generateId } from "ai";
 import remarkGfm from "remark-gfm";
 import { useRouter } from "next/navigation";
+import { useChat } from "@ai-sdk/react";
 
 export function Chat() {
   const router = useRouter();
@@ -27,7 +27,7 @@ export function Chat() {
     setTractatus(storedTractatus);
   }, [router]);
 
-  const { messages, input, setInput, isLoading, append } = useChat({
+  const { messages, input, setInput, status, append } = useChat({
     api: "/api/chat",
     body: {
       tractatus,
@@ -41,6 +41,8 @@ export function Chat() {
       },
     ],
   });
+
+  const isLoading = status === "streaming";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
