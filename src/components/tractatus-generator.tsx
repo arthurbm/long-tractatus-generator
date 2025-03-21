@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { useCompletion } from "ai/react";
+import { useCompletion } from "@ai-sdk/react";
 import {
   Copy,
   StopCircle,
