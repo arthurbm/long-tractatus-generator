@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 import { Card } from "~/components/ui/card";
-import { Loader2, Send } from "lucide-react";
+import { Loader2, Send, Square } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { generateId } from "ai";
 import remarkGfm from "remark-gfm";
@@ -39,7 +39,7 @@ export function Chat() {
     setTractatus(storedTractatus);
   }, [router]);
 
-  const { messages, input, setInput, status, handleSubmit } = useChat({
+  const { messages, input, setInput, status, handleSubmit, stop } = useChat({
     api: "/api/chat",
     body: {
       tractatus,
@@ -53,8 +53,6 @@ export function Chat() {
       },
     ],
   });
-
-  const isLoading = status === "streaming" || status === "submitted";
 
   if (!tractatus) {
     return null;
@@ -107,10 +105,17 @@ export function Chat() {
           <Button
             type="submit"
             size="icon"
-            disabled={!input.trim() || isLoading}
+            disabled={status === "submitted"}
+            onClick={() => {
+              if (status === "streaming") {
+                stop();
+              }
+            }}
           >
-            {isLoading ? (
+            {status === "submitted" ? (
               <Loader2 className="h-4 w-4 animate-spin" />
+            ) : status === "streaming" ? (
+              <Square className="h-4 w-4" />
             ) : (
               <Send className="h-4 w-4" />
             )}
